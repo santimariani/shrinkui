@@ -1,47 +1,60 @@
-import { Form, redirect } from 'react-router-dom';
+/* eslint-disable react-refresh/only-export-components */
+import { Form, Navigate, useActionData } from 'react-router-dom';
+import { useAuth } from '../../AuthContext';
 
-export async function action({request}) {
+import { useEffect } from 'react';
+
+export const action = async ({ request }) => {
     const formData = await request.formData();
-    const userName = formData.get('userName');
-    const userPassword = formData.get('userPassword');
 
-    const data = { username: userName, hashed_password: userPassword };
+    try {
+        const url = `${import.meta.env.VITE_API_URL}/login`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+        });
 
-    const addUser = await fetch('http://localhost:8000/users/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }).then(response => response.json());
-    console.log('USER ADDED:', addUser);
-    return redirect('/')
-}
+        const statusCode = response.status;
+        const data = await response.json();
+
+        console.log('RESPONSE:', response, response.status);
+
+        const { access_token } = data;
+        localStorage.clear();
+        localStorage.setItem('access_token', access_token);
+        return statusCode === 200 ? true : false;
+    } catch (error) {
+        console.error('ERROR: ', error);
+        return false;
+    }
+};
 
 const LogIn = () => {
-    return (
-        <>
-            <h2>LOG IN</h2>
-            &nbsp;
-            <Form method='post' className='center'>
+    const { isAuth, setIsAuth } = useAuth(false);
+    const response = useActionData();
+
+    useEffect(() => {
+        setIsAuth(response);
+    }, [response, setIsAuth]);
+
+    return !isAuth ? (
+        <div className='center'>
+            <h2>Login</h2>
+            <Form method="post" className='center'>
                 <label>
-                    Username&nbsp; 
-                    <input 
-                        name="userName" 
-                        type="email" 
-                    />
-                </label>&nbsp;
+                    Email Address&nbsp;
+                    <input type="email" name="username" />&nbsp;
+                </label>
                 <label>
                     Password&nbsp;
-                    <input
-                        name="userPassword"
-                        type="password"
-                    />
+                    <input type="password" name="password" />
                 </label>
                 <p></p>
-                <button type="submit" className='center'>LOG IN</button>
+                <button type="submit" className='center'>Login</button>
             </Form>
-        </>
+        </div>
+    ) : (
+        <Navigate to="/" />
     );
 };
 

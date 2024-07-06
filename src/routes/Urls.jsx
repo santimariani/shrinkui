@@ -11,10 +11,10 @@ const Urls = () => {
     const { data } = useLoaderData();
     console.log("Data?", data);
     return (
-        <>
+        <div className='center'>
             <h2>URLS SHRINKIFIED</h2>
-            <p>Here's them URLS we be storing and transforming:</p>
-            <ul>
+            <p></p>
+            <ul className='center'>
                 {data.map((url, index) => {
                     console.log(url)
                     return (
@@ -26,7 +26,7 @@ const Urls = () => {
                     );
                 })}
             </ul>
-        </>
+        </div>
     )
 }
 

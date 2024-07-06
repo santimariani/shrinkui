@@ -20,7 +20,7 @@ export async function action({request}) {
 
 const AddUser = () => {
     return (
-        <>
+        <div className='center'>
             <h2>CREATE USER</h2>
             &nbsp;
             <Form method='post' className='center'>
@@ -30,7 +30,7 @@ const AddUser = () => {
                         name="userName" 
                         type="email" 
                     />
-                </label>&nbsp;
+                </label>
                 <label>
                     Password&nbsp;
                     <input
@@ -41,7 +41,7 @@ const AddUser = () => {
                 <p></p>
                 <button type="submit" className='center'>ADD USER</button>
             </Form>
-        </>
+        </div>
     );
 };
 
